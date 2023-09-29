@@ -18,7 +18,6 @@ class Grafo:
 
   def mostra_grafo(self):
     for k, v in self.grafo.items():
-      #vizinhos = " -> ".join(map(str, self.grafo[v]))
       print(f"Vertice {k} : {v}")
 
   def teste(self):
@@ -63,27 +62,36 @@ LNE = ['A']
 BSS = []
 EC = 'A'
 
-
-"""
+# Recebe o dicionario para desenhar o grafo
+c = grafo.getDic()
 G = nx.DiGraph(c)
-# Defina uma cor para cada nó em um dicionário
-#node_colors = {'A': 'red', 'B': 'skyblue', 'C': 'skyblue', 'D': 'skyblue', 'E': 'skyblue', 'F': 'skyblue','G': 'yellow', 'H': 'skyblue','I': 'skyblue', 'U': 'skyblue'}
-cores = ['red' if n in LE else 'skyblue' for n in G.nodes()]
-pos = {'A': (1, 2), 'B': (-1, 1.5), 'C': (1, 1.5), 'D': (3, 1.5), 'E': (-2, 1), 'F': (0, 1), 'G': (2, 1), 'H': (-3, 0.5), 'I': (-1, 0.5), 'U': (1, 0.5)}  # Layout do grafo
-nx.draw(G, pos, with_labels=True, node_size=500, node_color=cores, font_size=12, font_color='black', font_weight='bold', arrowsize=15)
-plt.show()
-"""
+pos = {'A': (1, 2), 'B': (-1, 1.5), 'C': (1, 1.5), 'D': (3, 1.5), 'E': (-2, 1), 'F': (0, 1), 'G': (2, 1), 'H': (-3, 0.5), 'I': (-1, 0.5), 'U': (1, 0.5)} 
+
 
 print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
 while  len(LNE) != 0:
-  # a = grafo.getVizinhos(EC)
+  cores = {}
+  for v in G.nodes():
+    if v in LE:
+      cores[v] = 'red'
+    elif v in BSS:
+      cores[v] = 'purple'
+    else:
+      cores[v] = 'skyblue'
+
+  nx.draw(G, pos, with_labels=True, node_size=500, node_color=[cores[n] for n in G.nodes()], font_size=12, font_color='black', font_weight='bold', arrowsize=15)
+  plt.show()
+
   if EC == 'G':
     print(f"Objetivo encontrado: {EC}")
+    plt.show()
     break
   
+  # Pega os vizinhos de EC e remove os que ja estão em LE, LNE e BSS
   vizinhos = grafo.getVizinhos(EC)
   excluirNos = grafo.excluiRep(vizinhos)
-  
+
+  # Se EC não tem filhos
   if len(excluirNos) == 0:
     while (LE != 0) and (EC == LE[0]):
       # Acrescenta EC em BSS
@@ -94,9 +102,22 @@ while  len(LNE) != 0:
       LNE.pop(0)
       # EC recebe primeiro elemento de LNE
       EC = LNE[0]
-      print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
+      print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ") 
+      # Gera o grafo
+      for v in G.nodes():
+        if v in LE:
+          cores[v] = 'red'
+        elif v in BSS:
+          cores[v] = 'purple'
+        else:
+          cores[v] = 'skyblue'
+      nx.draw(G, pos, with_labels=True, node_size=500, node_color=[cores[n] for n in G.nodes()], font_size=12, font_color='black', font_weight='bold', arrowsize=15)
+      plt.show()
+    # Acrescenta EC a LE
     LE.insert(0, EC)
     print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
+    
+  # Se EC tem filhos
   else:
     # Coloca filhos de EC (exceto nós ja em BSS, LE ou LNE) em LNE
     LNE = excluirNos + LNE
@@ -105,7 +126,4 @@ while  len(LNE) != 0:
     # Acrescenta EC a LE
     LE.insert(0, EC)
     print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
-    
-  
-  
 
