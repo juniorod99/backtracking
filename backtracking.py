@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import networkx as nx
+
 
 class Grafo:
   def __init__(self):
@@ -43,7 +45,21 @@ class Grafo:
   def getDic(self):
     a = self.grafo
     return a
-    
+
+def atualizarCores():
+  for v in G.nodes():
+    if v in LE:
+      cores[v] = 'red'
+    elif v in BSS:
+      cores[v] = 'purple'
+    else:
+      cores[v] = 'skyblue'
+
+def desenhaGrafo():
+  nx.draw(G, pos, with_labels=True, node_size=500, node_color=[cores[n] for n in G.nodes()], font_size=12, font_color='black', font_weight='bold', arrowsize=15)
+  plt.legend(handles=patches, loc='upper right')
+  plt.show()
+
 grafo = Grafo()
 
 grafo.add_vertice("A", "B")
@@ -67,25 +83,24 @@ c = grafo.getDic()
 G = nx.DiGraph(c)
 pos = {'A': (1, 2), 'B': (-1, 1.5), 'C': (1, 1.5), 'D': (3, 1.5), 'E': (-2, 1), 'F': (0, 1), 'G': (2, 1), 'H': (-3, 0.5), 'I': (-1, 0.5), 'U': (1, 0.5)} 
 
+cores = {}
+
+colors = ['red', 'purple']
+labels = ['LE', 'BSS']
+patches = [mpatches.Patch(color=c, label=l) for c, l in zip(colors, labels)]
 
 print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
 while  len(LNE) != 0:
-  cores = {}
-  for v in G.nodes():
-    if v in LE:
-      cores[v] = 'red'
-    elif v in BSS:
-      cores[v] = 'purple'
-    else:
-      cores[v] = 'skyblue'
+  atualizarCores()
+  desenhaGrafo()
 
-  nx.draw(G, pos, with_labels=True, node_size=500, node_color=[cores[n] for n in G.nodes()], font_size=12, font_color='black', font_weight='bold', arrowsize=15)
-  plt.show()
-
-  if EC == 'G':
+  if EC == 'P':
     print(f"Objetivo encontrado: {EC}")
     plt.show()
     break
+  elif len(EC) == 0:
+    print(f"Objetivo não encontrado")
+  
   
   # Pega os vizinhos de EC e remove os que ja estão em LE, LNE e BSS
   vizinhos = grafo.getVizinhos(EC)
@@ -103,16 +118,8 @@ while  len(LNE) != 0:
       # EC recebe primeiro elemento de LNE
       EC = LNE[0]
       print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ") 
-      # Gera o grafo
-      for v in G.nodes():
-        if v in LE:
-          cores[v] = 'red'
-        elif v in BSS:
-          cores[v] = 'purple'
-        else:
-          cores[v] = 'skyblue'
-      nx.draw(G, pos, with_labels=True, node_size=500, node_color=[cores[n] for n in G.nodes()], font_size=12, font_color='black', font_weight='bold', arrowsize=15)
-      plt.show()
+      atualizarCores()
+      desenhaGrafo()      
     # Acrescenta EC a LE
     LE.insert(0, EC)
     print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
