@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import networkx as nx
 
-
 class Grafo:
   def __init__(self):
     self.grafo = {}
@@ -59,9 +58,8 @@ def desenhaGrafo():
   nx.draw(G, pos, with_labels=True, node_size=500, node_color=[cores[n] for n in G.nodes()], font_size=12, font_color='black', font_weight='bold', arrowsize=15)
   plt.legend(handles=patches, loc='upper right')
   plt.show()
-
+  
 grafo = Grafo()
-
 grafo.add_vertice("A", "B")
 grafo.add_vertice("A", "C")
 grafo.add_vertice("A", "D")
@@ -89,18 +87,18 @@ colors = ['red', 'purple']
 labels = ['LE', 'BSS']
 patches = [mpatches.Patch(color=c, label=l) for c, l in zip(colors, labels)]
 
-print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
+print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC}")
+
 while  len(LNE) != 0:
   atualizarCores()
   desenhaGrafo()
 
-  if EC == 'P':
+  if EC == 'G':
     print(f"Objetivo encontrado: {EC}")
     plt.show()
     break
   elif len(EC) == 0:
     print(f"Objetivo não encontrado")
-  
   
   # Pega os vizinhos de EC e remove os que ja estão em LE, LNE e BSS
   vizinhos = grafo.getVizinhos(EC)
@@ -115,14 +113,17 @@ while  len(LNE) != 0:
       LE.pop(0)
       # Remove primeiro elemento de LNE
       LNE.pop(0)
+      if(len(LNE) == 0 or len(LE) == 0 ):
+        print(f"Objetivo não encontrado")
+        break
       # EC recebe primeiro elemento de LNE
       EC = LNE[0]
-      print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ") 
+      print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC}") 
       atualizarCores()
       desenhaGrafo()      
     # Acrescenta EC a LE
     LE.insert(0, EC)
-    print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
+    print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC}")
     
   # Se EC tem filhos
   else:
@@ -132,5 +133,5 @@ while  len(LNE) != 0:
     EC = LNE[0]
     # Acrescenta EC a LE
     LE.insert(0, EC)
-    print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC} ")
+    print(f"LE: {LE} | LNE: {LNE} | BSS: {BSS} | EC: {EC}")
 
