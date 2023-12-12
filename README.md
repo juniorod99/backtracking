@@ -14,7 +14,7 @@ Para o desenvolvimento deste site utilizei as seguintes tecnologias:
 
 - Python;
 - Matplotlib;
-- NetworkX;
+- NetworkX.
 
 ## 🔧 Arquitetura
 
